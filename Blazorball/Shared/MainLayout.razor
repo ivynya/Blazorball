@@ -1,15 +1,26 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
+<main class="main">
     <div class="top-row px-4">
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <button class="btn btn-info" @onclick="ToggleNav">Pages</button>
     </div>
 
     <div class="content px-4">
         @Body
     </div>
+</main>
+
+<div class="sidebar @NavMenuCssClass">
+    <NavMenu />
 </div>
+
+@code {
+    private bool showNav = false;
+
+    private string NavMenuCssClass => showNav ? null : "d-none";
+
+    private void ToggleNav()
+    {
+        showNav = !showNav;
+    }
+}
