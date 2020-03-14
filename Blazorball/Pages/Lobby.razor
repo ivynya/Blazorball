@@ -1,20 +1,10 @@
 ﻿@page "/lobby"
 @using Microsoft.AspNetCore.SignalR.Client
+@using Blazorball.Data
 @inject NavigationManager NavigationManager
 
-<div class="form-group">
-    <label>
-        User:
-        <input @bind="_userInput" />
-    </label>
-</div>
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="_messageInput" size="50" />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+<h1>blazorball.xyz</h1>
+<h2>Room Code: @RoomCode</h2>
 
 <hr>
 
@@ -30,6 +20,7 @@
     private List<string> _messages = new List<string>();
     private string _userInput;
     private string _messageInput;
+    private int RoomCode;
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,7 +35,16 @@
             StateHasChanged();
         });
 
+        _hubConnection.On<int>("SetRoomID", (roomCode) =>
+        {
+            RoomCode = roomCode;
+            StateHasChanged();
+        });
+
         await _hubConnection.StartAsync();
+
+        // Register as host and get room code
+        await _hubConnection.SendAsync(Messages.Register);
     }
 
     Task Send() =>
