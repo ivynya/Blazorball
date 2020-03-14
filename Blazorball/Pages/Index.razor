@@ -1,14 +1,33 @@
 ﻿@page "/"
 
 <div class="text-center">
-    <section class="flex-container">
-        <img src="/img/blazorball.svg" alt="Blazorball" class="w-100" />
-    </section>
-    <br />
-    <h2>A fast-paced collaborative football-them-up.</h2>
+    <div class="header">
+        <div class="flex-container">
+            <img src="/img/blazorball.svg" alt="Blazorball" class="w-100" />
+        </div>
+        <br />
+        <h2>A fast-paced collaborative football-them-up.</h2>
+    </div>
     
-    <section class="flex-container">
-        <button class="button g-blue">Create Game</button>
-        <button class="button g-red">Join Game</button>
+    <section class="@JoinCTACSS">
+        <input type="number" class="text-input" placeholder="Game PIN" />
+        <button class="button g-red">Join</button>
+    </section>
+
+    <section class="@OptionSelectorCSS">
+        <a class="button g-blue" href="/lobby">Create Game</a>
+        <button class="button g-red" @onclick="ToggleJoinCTA">Join Game</button>
     </section>
 </div>
+
+@code { 
+    private bool showJoinCTA = false;
+
+    private string JoinCTACSS => showJoinCTA ? "flex-container join-cta" : "d-none";
+    private string OptionSelectorCSS => showJoinCTA ? "d-none" : "flex-container";
+
+    private void ToggleJoinCTA()
+    {
+        showJoinCTA = !showJoinCTA;
+    }
+}

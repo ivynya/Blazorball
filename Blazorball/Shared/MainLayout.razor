@@ -2,25 +2,11 @@
 
 <main class="main">
     <div class="top-row px-4">
-        <button class="btn btn-outline-info" @onclick="ToggleNav">Menu</button>
+        <a href="/about" class="btn btn-outline-info">About</a>
+        <a href="/" class="btn btn-outline-light">Home</a>
     </div>
 
     <div class="content px-4">
         @Body
     </div>
 </main>
-
-<div class="sidebar @NavMenuCssClass">
-    <NavMenu />
-</div>
-
-@code {
-    private bool showNav = false;
-
-    private string NavMenuCssClass => showNav ? null : "d-none";
-
-    private void ToggleNav()
-    {
-        showNav = !showNav;
-    }
-}
