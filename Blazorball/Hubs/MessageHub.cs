@@ -29,9 +29,27 @@ namespace Blazorball.Hubs
                 hosts.Add(currentId, code);
                 // Send RoomID to host
                 await Clients.Caller.SendAsync(Messages.SetRoomID, code);
+                await Groups.AddToGroupAsync(Context.ConnectionId, code.ToString());
             }
         }
 
+        // Checks if a room exists, returns true or false. Used by the client.
+        public async Task VerifyRoom(int roomCode)
+        {
+            if (hosts.ContainsValue(roomCode))
+                await Clients.Caller.SendAsync(Messages.VerifyRoom, true);
+            else
+                await Clients.Caller.SendAsync(Messages.VerifyRoom, false);
+        }
+
+        // Joins a client to a room
+        public async Task JoinRoom(int roomCode, string userName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
+            await Clients.Group(roomCode.ToString()).SendAsync(Messages.JoinRoom, userName);
+        }
+
+        // Handles removing host or client on disconnect
         public override async Task OnDisconnectedAsync(Exception e)
         {
             Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");

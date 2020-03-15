@@ -1,4 +1,7 @@
 ﻿@page "/client"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Blazorball.Data
+@inject NavigationManager NavigationManager
 
 <div class="text-center">
     <div class="header">
@@ -8,12 +11,55 @@
         <br />
     </div>
 
-    <section class="flex-container join-cta">
+    <section class="flex-container join-cta @GamePINCSS">
         <input type="number" class="text-input" placeholder="Game PIN" @bind="gamePIN" />
-        <button class="button g-red">Join</button>
+        <button class="button g-red" @onclick="VerifyRoom">Continue</button>
     </section>
+
+    <section class="flex-container join-cta @UserNameCSS">
+        <input type="text" class="text-input" placeholder="Your Name" @bind="userName" />
+        <button class="button g-red" @onclick="JoinRoom">Join</button>
+    </section>
+
+    <span>@Validation</span>
 </div>
 
 @code {
-    int gamePIN;
+    string GamePINCSS;
+    string UserNameCSS = "d-none";
+    string Validation;
+
+    int? gamePIN;
+    string userName;
+
+    private HubConnection _hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chatHub"))
+            .Build();
+
+        _hubConnection.On<bool>(Messages.VerifyRoom, (validated) =>
+        {
+            if (!validated) Validation = "Invalid room code!";
+            else
+            {
+                GamePINCSS = "d-none";
+                UserNameCSS = "";
+            }
+            StateHasChanged();
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    Task VerifyRoom() =>
+        _hubConnection.SendAsync(Messages.VerifyRoom, gamePIN);
+
+    Task JoinRoom() =>
+        _hubConnection.SendAsync(Messages.JoinRoom, gamePIN, userName);
+
+    public bool IsConnected =>
+        _hubConnection.State == HubConnectionState.Connected;
 }

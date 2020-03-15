@@ -6,18 +6,19 @@
 <section class="lobby-header">
     <h2>blazorball.xyz</h2>
     <h1>@RoomCode</h1>
+    <button class="button g-red">Start Game</button>
 </section>
 <hr />
-<ul id="messagesList">
-    @foreach (var message in _messages)
+<ul id="userList">
+    @foreach (var user in _users)
     {
-        <li>@message</li>
+        <li>@user</li>
     }
 </ul>
 
 @code {
     private HubConnection _hubConnection;
-    private List<string> _messages = new List<string>();
+    private List<string> _users = new List<string>();
     private int RoomCode;
 
     protected override async Task OnInitializedAsync()
@@ -26,10 +27,9 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/chatHub"))
             .Build();
 
-        _hubConnection.On<string, string>(Messages.Recieve, (user, message) =>
+        _hubConnection.On<string>(Messages.JoinRoom, (user) =>
         {
-            var encodedMsg = $"{user}: {message}";
-            _messages.Add(encodedMsg);
+            _users.Insert(0, user);
             StateHasChanged();
         });
 
