@@ -1,0 +1,19 @@
+﻿@page "/client"
+
+<div class="text-center">
+    <div class="header">
+        <div class="flex-container">
+            <img src="/img/blazorball.svg" alt="Blazorball" class="w-100" />
+        </div>
+        <br />
+    </div>
+
+    <section class="flex-container join-cta">
+        <input type="number" class="text-input" placeholder="Game PIN" @bind="gamePIN" />
+        <button class="button g-red">Join</button>
+    </section>
+</div>
+
+@code {
+    int gamePIN;
+}

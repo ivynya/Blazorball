@@ -135,6 +135,10 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+hr {
+    background-color: #fff;
+}
+
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
