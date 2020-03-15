@@ -1,4 +1,5 @@
 ﻿using Blazorball.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,10 @@ namespace Blazorball.Hubs
 
         public async Task SendMessage(string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await Clients.All.SendAsync(Messages.Recieve, user, message);
         }
 
+        // Host client registers a room. Returns SetRoomID + RoomID
         public async Task Register()
         {
             var currentId = Context.ConnectionId;
@@ -23,11 +25,22 @@ namespace Blazorball.Hubs
             {
                 // Generate room code
                 int code = new Random().Next(10000, 100000);
-                // maintain a lookup of connectionId-to-username
+                // Maintain lookup of hosts
                 hosts.Add(currentId, code);
-                // re-use existing message for now
-                await Clients.Caller.SendAsync("SetRoomID", code);
+                // Send RoomID to host
+                await Clients.Caller.SendAsync(Messages.SetRoomID, code);
             }
+        }
+
+        public override async Task OnDisconnectedAsync(Exception e)
+        {
+            Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
+            // Try to get and remove lookup
+            string id = Context.ConnectionId;
+            if (hosts.ContainsKey(id))
+                hosts.Remove(id);
+
+            await base.OnDisconnectedAsync(e);
         }
     }
 }

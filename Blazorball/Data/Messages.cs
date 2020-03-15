@@ -11,6 +11,8 @@ namespace Blazorball.Data
 
         public const string Register = "Register";
 
+        public const string SetRoomID = "SetRoomID";
+
         public const string Send = "SendMessage";
     }
 }
