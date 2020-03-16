@@ -24,15 +24,18 @@
             <button class="button g-red" @onclick="JoinRoom">Join</button>
         </section>
 
+        <br />
         <span>@Validation</span>
     </div>
 
     <div class="@TeamSelectorCSS">
+        <h3>Joined as: @userName</h3>
         <ul id="userList">
-            @for (int i = 0; i <= _teamCount; i++)
+            @for (int i = 1; i <= _teamCount; i++)
             {
                 <li>
-                    <span class="list-header"><b>Team @i</b><button class="button" @onclick="Stop">Join</button></span>
+                    @{ int v = i; }   
+                    <span class="list-header"><b>Team @i</b><button class="button" @onclick="() => JoinTeam(v)">Join</button></span>
                     @foreach (var user in _users.Where(u => u.Value == i))
                     {
                         <span>@user.Key</span>
@@ -41,7 +44,7 @@
             }
             <li>
                 <span class="list-header"><b>Create New Team</b></span>
-                <button class="button g-red" @onclick="Stop">Create and Join</button>
+                <button class="button g-red" @onclick="CreateTeam">Create and Join</button>
             </li>
         </ul>
     </div>
@@ -108,6 +111,12 @@
 
     Task JoinRoom() =>
         _hubConnection.SendAsync(Messages.JoinRoom, gamePIN, userName);
+
+    Task CreateTeam() =>
+        _hubConnection.SendAsync(Messages.CreateTeam);
+
+    Task JoinTeam(int teamID) =>
+        _hubConnection.SendAsync(Messages.JoinTeam, teamID);
 
     Task Stop() =>
         _hubConnection.StopAsync();

@@ -69,9 +69,28 @@ namespace Blazorball.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
             await Clients.Caller.SendAsync(Messages.VerifyJoin, true, "");
 
+            // Add client to lookups and update information
             clients.Add(Context.ConnectionId, new KeyValuePair<int, string>(roomCode, userName));
             players[roomCode].Add(userName, 0);
-            await Clients.Group(roomCode.ToString()).SendAsync(Messages.UpdateUsers, teamCount[roomCode], JsonConvert.SerializeObject(players[roomCode]));
+            await UpdateRoom(roomCode);
+        }
+
+        // Creates a new team in a room, and joins the client to that team
+        public async Task CreateTeam()
+        {
+            int roomCode = clients[Context.ConnectionId].Key;
+            teamCount[roomCode] += 1;
+            players[roomCode][clients[Context.ConnectionId].Value] = teamCount[roomCode];
+
+            await UpdateRoom(roomCode);
+        }
+
+        public async Task JoinTeam(int teamID)
+        {
+            int roomCode = clients[Context.ConnectionId].Key;
+            players[roomCode][clients[Context.ConnectionId].Value] = teamID;
+
+            await UpdateRoom(roomCode);
         }
 
         // Handles removing host or client on disconnect
@@ -93,10 +112,16 @@ namespace Blazorball.Hubs
                 int roomCode = clients[id].Key;
                 players[roomCode].Remove(clients[id].Value);
                 await Groups.RemoveFromGroupAsync(id, roomCode.ToString());
-                await Clients.Group(roomCode.ToString()).SendAsync(Messages.UpdateUsers, teamCount[roomCode], JsonConvert.SerializeObject(players[roomCode]));
+                await UpdateRoom(roomCode);
             }
 
             await base.OnDisconnectedAsync(e);
+        }
+
+        // Updates the user list in a given room
+        private async Task UpdateRoom(int room)
+        {
+            await Clients.Group(room.ToString()).SendAsync(Messages.UpdateUsers, teamCount[room], JsonConvert.SerializeObject(players[room]));
         }
     }
 }
