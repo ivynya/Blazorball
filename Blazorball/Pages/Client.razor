@@ -3,6 +3,7 @@
 @using Newtonsoft.Json
 @using Blazorball.Data
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="text-center">
     <div class="header">
@@ -31,13 +32,17 @@
             @for (int i = 0; i <= _teamCount; i++)
             {
                 <li>
-                    <span class="list-header"><b>Team @i</b><button class="button">Join</button></span>
+                    <span class="list-header"><b>Team @i</b><button class="button" @onclick="Stop">Join</button></span>
                     @foreach (var user in _users.Where(u => u.Value == i))
                     {
                         <span>@user.Key</span>
                     }
                 </li>
             }
+            <li>
+                <span class="list-header"><b>Create New Team</b></span>
+                <button class="button g-red" @onclick="Stop">Create and Join</button>
+            </li>
         </ul>
     </div>
 </div>
@@ -81,6 +86,9 @@
             {
                 JoinCTACSS = "d-none";
                 TeamSelectorCSS = "";
+
+                // Add JS Interop to handle disconnections
+                JSRuntime.InvokeAsync<object>("createref", DotNetObjectReference.Create(this));
             }
             StateHasChanged();
         });
@@ -101,6 +109,13 @@
     Task JoinRoom() =>
         _hubConnection.SendAsync(Messages.JoinRoom, gamePIN, userName);
 
+    Task Stop() =>
+        _hubConnection.StopAsync();
+
     public bool IsConnected =>
-        _hubConnection.State == HubConnectionState.Connected;
+    _hubConnection.State == HubConnectionState.Connected;
+
+    [JSInvokable]
+    public async Task Disconnect() =>
+        await _hubConnection.StopAsync();
 }

@@ -3,6 +3,7 @@
 @using Newtonsoft.Json
 @using Blazorball.Data
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <section class="lobby-header">
     <h2>blazorball.xyz</h2>
@@ -39,6 +40,9 @@
         {
             RoomCode = roomCode;
             StateHasChanged();
+
+            // Add JS Interop to handle disconnections
+            JSRuntime.InvokeAsync<object>("createref", DotNetObjectReference.Create(this));
         });
 
         _hubConnection.On<int, string>(Messages.UpdateUsers, (teamCount, users) =>
@@ -59,4 +63,8 @@
 
     public bool IsConnected =>
         _hubConnection.State == HubConnectionState.Connected;
+
+    [JSInvokable]
+    public async Task Disconnect() =>
+        await _hubConnection.StopAsync();
 }

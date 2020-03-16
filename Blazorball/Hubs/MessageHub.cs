@@ -11,6 +11,8 @@ namespace Blazorball.Hubs
     {
         // Connection ID - Room Code
         private static readonly Dictionary<string, int> hosts = new Dictionary<string, int>();
+        // Connection ID - [Room Code, Player Name]
+        private static readonly Dictionary<string, KeyValuePair<int, string>> clients = new Dictionary<string, KeyValuePair<int, string>>();
 
         // Room Code - [Player Name, Team Index]
         public static readonly Dictionary<int, Dictionary<string, int>> players = new Dictionary<int, Dictionary<string, int>>();
@@ -67,6 +69,7 @@ namespace Blazorball.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
             await Clients.Caller.SendAsync(Messages.VerifyJoin, true, "");
 
+            clients.Add(Context.ConnectionId, new KeyValuePair<int, string>(roomCode, userName));
             players[roomCode].Add(userName, 0);
             await Clients.Group(roomCode.ToString()).SendAsync(Messages.UpdateUsers, teamCount[roomCode], JsonConvert.SerializeObject(players[roomCode]));
         }
@@ -75,11 +78,23 @@ namespace Blazorball.Hubs
         public override async Task OnDisconnectedAsync(Exception e)
         {
             Console.WriteLine($"Disconnected {e?.Message} {Context.ConnectionId}");
+
             // Try to get and remove lookup
             string id = Context.ConnectionId;
 
             if (hosts.ContainsKey(id))
+            {
                 hosts.Remove(id);
+                await Groups.RemoveFromGroupAsync(id, hosts[id].ToString());
+            }
+
+            if (clients.ContainsKey(id))
+            {
+                int roomCode = clients[id].Key;
+                players[roomCode].Remove(clients[id].Value);
+                await Groups.RemoveFromGroupAsync(id, roomCode.ToString());
+                await Clients.Group(roomCode.ToString()).SendAsync(Messages.UpdateUsers, teamCount[roomCode], JsonConvert.SerializeObject(players[roomCode]));
+            }
 
             await base.OnDisconnectedAsync(e);
         }

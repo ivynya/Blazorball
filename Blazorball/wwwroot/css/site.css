@@ -168,7 +168,7 @@ app {
         }
 
             #userList > li > .list-header > b {
-                flex: 1 1;
+                flex: 2 1;
                 line-height: 3rem;
             }
 
