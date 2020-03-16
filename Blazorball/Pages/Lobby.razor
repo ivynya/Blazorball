@@ -1,5 +1,6 @@
 ﻿@page "/lobby"
 @using Microsoft.AspNetCore.SignalR.Client
+@using Newtonsoft.Json
 @using Blazorball.Data
 @inject NavigationManager NavigationManager
 
@@ -10,15 +11,22 @@
 </section>
 <hr />
 <ul id="userList">
-    @foreach (var user in _users)
+    @for (int i = 0; i <= _teamCount; i++)
     {
-        <li>@user</li>
+        <li>
+            <span><b>Team @i</b></span>
+            @foreach (var user in _users.Where(u => u.Value == i))
+            {
+                <span>@user.Key</span>
+            }
+        </li>
     }
 </ul>
 
 @code {
     private HubConnection _hubConnection;
-    private List<string> _users = new List<string>();
+    private int _teamCount = 0;
+    private Dictionary<string, int> _users = new Dictionary<string, int>();
     private int RoomCode;
 
     protected override async Task OnInitializedAsync()
@@ -27,9 +35,10 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/chatHub"))
             .Build();
 
-        _hubConnection.On<string>(Messages.JoinRoom, (user) =>
+        _hubConnection.On<int, string>(Messages.UpdateUsers, (teamCount, users) =>
         {
-            _users.Insert(0, user);
+            _teamCount = teamCount;
+            _users = JsonConvert.DeserializeObject<Dictionary<string, int>>(users);
             StateHasChanged();
         });
 

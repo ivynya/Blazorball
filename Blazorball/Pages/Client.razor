@@ -11,23 +11,32 @@
         <br />
     </div>
 
-    <section class="flex-container join-cta @GamePINCSS">
-        <input type="number" class="text-input" placeholder="Game PIN" @bind="gamePIN" />
-        <button class="button g-red" @onclick="VerifyRoom">Continue</button>
-    </section>
+    <div class="@JoinCTACSS">
+        <section class="flex-container join-cta @GamePINCSS">
+            <input type="number" class="text-input" placeholder="Game PIN" @bind="gamePIN" />
+            <button class="button g-red" @onclick="VerifyRoom">Continue</button>
+        </section>
 
-    <section class="flex-container join-cta @UserNameCSS">
-        <input type="text" class="text-input" placeholder="Your Name" @bind="userName" />
-        <button class="button g-red" @onclick="JoinRoom">Join</button>
-    </section>
+        <section class="flex-container join-cta @UserNameCSS">
+            <input type="text" class="text-input" placeholder="Your Name" @bind="userName" />
+            <button class="button g-red" @onclick="JoinRoom">Join</button>
+        </section>
 
-    <span>@Validation</span>
+        <span>@Validation</span>
+    </div>
+
+    <div class="@TeamSelectorCSS">
+
+    </div>
 </div>
 
 @code {
+    string JoinCTACSS;
     string GamePINCSS;
     string UserNameCSS = "d-none";
     string Validation;
+
+    string TeamSelectorCSS = "d-none";
 
     int? gamePIN;
     string userName;
@@ -47,6 +56,17 @@
             {
                 GamePINCSS = "d-none";
                 UserNameCSS = "";
+            }
+            StateHasChanged();
+        });
+
+        _hubConnection.On<bool, string>(Messages.VerifyJoin, (validated, message) =>
+        {
+            if (!validated) Validation = message;
+            else
+            {
+                JoinCTACSS = "d-none";
+                TeamSelectorCSS = "";
             }
             StateHasChanged();
         });

@@ -7,10 +7,6 @@ namespace Blazorball.Data
 {
     public static class Messages
     {
-        public const string Recieve = "ReceiveMessage";
-
-        public const string Send = "SendMessage";
-
         public const string Register = "Register";
 
         public const string SetRoomID = "SetRoomID";
@@ -18,5 +14,9 @@ namespace Blazorball.Data
         public const string VerifyRoom = "VerifyRoom";
 
         public const string JoinRoom = "JoinRoom";
+
+        public const string VerifyJoin = "VerifyJoin";
+
+        public const string UpdateUsers = "UpdateUsers";
     }
 }
