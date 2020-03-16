@@ -7,7 +7,7 @@
 <section class="lobby-header">
     <h2>blazorball.xyz</h2>
     <h1>@RoomCode</h1>
-    <button class="button g-red">Start Game</button>
+    <button class="button g-red" @onclick="Start">Start Game</button>
 </section>
 <hr />
 <ul id="userList">
@@ -35,16 +35,16 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/chatHub"))
             .Build();
 
+        _hubConnection.On<int>(Messages.SetRoomID, (roomCode) =>
+        {
+            RoomCode = roomCode;
+            StateHasChanged();
+        });
+
         _hubConnection.On<int, string>(Messages.UpdateUsers, (teamCount, users) =>
         {
             _teamCount = teamCount;
             _users = JsonConvert.DeserializeObject<Dictionary<string, int>>(users);
-            StateHasChanged();
-        });
-
-        _hubConnection.On<int>(Messages.SetRoomID, (roomCode) =>
-        {
-            RoomCode = roomCode;
             StateHasChanged();
         });
 

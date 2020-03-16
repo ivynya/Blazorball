@@ -154,13 +154,31 @@ app {
         font-size: 24px;
         text-align: center;
         text-overflow: ellipsis;
-        margin: 10px 0;
-        width: 45%;
+        margin: 10px 5px;
+        width: 100%;
     }
 
-    #userList > li > span {
-        margin: 10px 0;
-    }
+        #userList > li > span {
+            margin: 5px 0;
+        }
+
+        #userList > li > .list-header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+            #userList > li > .list-header > b {
+                flex: 1 1;
+                line-height: 3rem;
+            }
+
+            #userList > li > .list-header > .button {
+                background-color: #e93;
+                border-radius: 2px;
+                margin-left: 20px;
+                padding: 4px 15px;
+                flex: 1 1;
+            }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -247,13 +265,17 @@ hr {
     }
 
     #userList > li {
-        width: 32%;
+        width: 48%;
     }
 }
 
 @media (min-width: 1000px) {
     .main {
         max-width: 1000px;
+    }
+
+    #userList > li {
+        width: 32%;
     }
 }
 

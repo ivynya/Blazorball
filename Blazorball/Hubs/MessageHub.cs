@@ -25,10 +25,12 @@ namespace Blazorball.Hubs
             {
                 // Generate room code
                 int code = new Random().Next(10000, 100000);
+
                 // Maintain lookup of rooms
                 hosts.Add(currentId, code);
                 players.Add(code, new Dictionary<string, int>());
                 teamCount.Add(code, 0);
+
                 // Send RoomID to host
                 await Clients.Caller.SendAsync(Messages.SetRoomID, code);
                 await Groups.AddToGroupAsync(Context.ConnectionId, code.ToString());
