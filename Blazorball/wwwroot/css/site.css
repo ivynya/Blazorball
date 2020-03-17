@@ -7,7 +7,7 @@ html, body {
 }
 
 a, .btn-link {
-    color: #0366d6;
+    color: #34a8fb;
 }
 
 .btn-primary {
@@ -52,11 +52,15 @@ app {
     padding-top: 1.1rem;
 }
 
+.container {
+    max-width: 700px;
+}
+
 .flex-container {
     display: flex;
     margin: auto;
     max-width: 700px;
-    margin-top: 100px;
+    margin-top: 80px;
     flex-direction: column;
 }
 
@@ -100,8 +104,32 @@ app {
     margin-top: 2rem;
 }
 
-.header h2 {
-    font-size: 24px;
+h2 {
+    font-size: 22px;
+}
+
+.header svg {
+    margin: auto;
+    width: 12rem;
+}
+
+    .header svg path {
+        animation: color-pulse 5s infinite;
+    }
+
+@keyframes color-pulse {
+    0% {
+        fill: #f63;
+    }
+    35% {
+        fill: #ff9e00;
+    }
+    65% {
+        fill: #ffd800;
+    }
+    100% {
+        fill: #f63;
+    }
 }
 
 .join-cta {
@@ -244,8 +272,12 @@ hr {
         flex-direction: row;
     }
 
-    .header h2 {
-        font-size: 32px;
+    h2 {
+        font-size: 28px;
+    }
+
+    .header svg {
+        width: 20rem;
     }
 
     .join-cta {

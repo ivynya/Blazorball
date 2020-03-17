@@ -6,5 +6,5 @@ window.createref = (inst) => {
 
 window.onunload = disconnect;
 function disconnect() {
-    return instance.invokeMethodAsync('Disconnect');
+    if (instance) return instance.invokeMethodAsync('Disconnect');
 }
