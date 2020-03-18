@@ -41,11 +41,10 @@ namespace Blazorball
             }
 
             app.UseHttpsRedirection();
-            app.UseResponseCompression();
+            app.UseResponseCaching();
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();

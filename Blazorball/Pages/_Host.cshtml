@@ -14,7 +14,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="~/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
+    <environment include="Development">
+        <link href="css/site.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="css/site.min.css" rel="stylesheet" />
+    </environment>
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,400&amp;display=swap" rel="stylesheet">
 </head>
 <body>
@@ -34,6 +39,11 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
-    <script src="js/interop.js"></script>
+    <environment include="Development">
+        <script src="js/interop.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="js/site.min.js"></script>
+    </environment>
 </body>
 </html>
