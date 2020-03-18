@@ -85,12 +85,20 @@ namespace Blazorball.Hubs
             await UpdateRoom(roomCode);
         }
 
+        // Joins a user to a team using clients to get room ID
         public async Task JoinTeam(int teamID)
         {
             int roomCode = clients[Context.ConnectionId].Key;
             players[roomCode][clients[Context.ConnectionId].Value] = teamID;
 
             await UpdateRoom(roomCode);
+        }
+
+        // Allows clients to see game controls, host to see game screen
+        public async Task StartGame()
+        {
+            int room = hosts[Context.ConnectionId];
+            await Clients.Group(room.ToString()).SendAsync(Messages.StartGame);
         }
 
         // Handles removing host or client on disconnect

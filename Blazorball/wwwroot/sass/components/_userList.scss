@@ -1,0 +1,51 @@
+﻿
+/* User List */
+
+#userList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+
+    > li {
+        background-color: #3498db;
+        border-radius: 3px;
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        font-size: 24px;
+        text-align: center;
+        text-overflow: ellipsis;
+        margin: 10px 5px;
+        width: 100%;
+
+        @media (min-width: 768px) {
+            width: 48%;
+        }
+
+        @media (min-width: 1000px) {
+            width: 32%;
+        }
+
+        span {
+            margin: 5px 0;
+        }
+
+        > .list-header {
+            display: flex;
+            justify-content: space-between;
+
+            > b {
+                flex: 2 1;
+                line-height: 3rem;
+            }
+
+            > .button {
+                background-color: #0ff;
+                border-radius: 2px;
+                margin-left: 20px;
+                padding: 4px 15px;
+                flex: 1 1;
+            }
+        }
+    }
+}

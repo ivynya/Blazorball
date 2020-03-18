@@ -22,5 +22,7 @@ namespace Blazorball.Data
         public const string JoinTeam = "JoinTeam";
 
         public const string UpdateUsers = "UpdateUsers";
+
+        public const string StartGame = "StartGame";
     }
 }
