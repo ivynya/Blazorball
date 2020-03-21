@@ -26,7 +26,7 @@
     </ul>
 </section>
 <section class="game @GameCSS">
-
+    <canvas id="gameCanvas"></canvas>
 </section>
 
 @code {
@@ -64,6 +64,7 @@
         {
             LobbyCSS = "d-none";
             GameCSS = "";
+            JSRuntime.InvokeAsync<object>("gamestart");
         });
 
         await _hubConnection.StartAsync();

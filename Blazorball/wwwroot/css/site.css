@@ -1,4 +1,49 @@
 @import url("open-iconic/font/css/open-iconic-bootstrap.min.css");
+/* Game */
+.game {
+  background-color: #2c3e50;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.game #gameCanvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* Join CTA */
+.join-cta {
+  width: 280px;
+}
+.join-cta .text-input {
+  border: none;
+  border-radius: 3px;
+  color: #ff2c00;
+  font-size: 24px;
+  padding: 5px 20px;
+  text-align: center;
+}
+.join-cta .button {
+  margin: 10px 0;
+}
+@media (min-width: 768px) {
+  .join-cta .button {
+    margin: 0 10px;
+    padding: 10px 30px;
+  }
+}
+@media (min-width: 768px) {
+  .join-cta {
+    width: 500px;
+  }
+  .join-cta .button {
+    margin: 0 10px;
+    padding: 10px 30px;
+  }
+}
+
 /* Lobby Header */
 .lobby-header {
   position: relative;
@@ -179,21 +224,6 @@ app {
   animation: color-pulse 5s infinite;
 }
 
-.join-cta {
-  width: 280px;
-}
-.join-cta .text-input {
-  border: none;
-  border-radius: 3px;
-  color: #ff2c00;
-  font-size: 24px;
-  padding: 5px 20px;
-  text-align: center;
-}
-.join-cta .button {
-  margin: 10px 0;
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -271,14 +301,6 @@ input::-webkit-inner-spin-button {
 
   .header svg {
     width: 20rem;
-  }
-
-  .join-cta {
-    width: 500px;
-  }
-  .join-cta .button {
-    margin: 0 10px;
-    padding: 10px 30px;
   }
 }
 @media (min-width: 1000px) {

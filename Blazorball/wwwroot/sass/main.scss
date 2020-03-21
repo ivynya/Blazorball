@@ -2,6 +2,8 @@
 
 // Components
 
+@import 'components/game';
+@import 'components/joinCTA';
 @import 'components/lobbyHeader';
 @import 'components/userList';
 
@@ -124,23 +126,6 @@ app {
     }
 }
 
-.join-cta {
-    width: 280px;
-
-    .text-input {
-        border: none;
-        border-radius: 3px;
-        color: #ff2c00;
-        font-size: 24px;
-        padding: 5px 20px;
-        text-align: center;
-    }
-
-    .button {
-        margin: 10px 0;
-    }
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -200,11 +185,9 @@ input::-webkit-inner-spin-button {
     h2 {
         font-size: 28px;
     }
-
     app {
         flex-direction: row;
     }
-
     .main {
         max-width: 768px;
 
@@ -218,22 +201,11 @@ input::-webkit-inner-spin-button {
             padding-right: 1.5rem !important;
         }
     }
-
     .flex-container {
         flex-direction: row;
     }
-
     .header svg {
         width: 20rem;
-    }
-
-    .join-cta {
-        width: 500px;
-
-        .button {
-            margin: 0 10px;
-            padding: 10px 30px;
-        }
     }
 }
 
