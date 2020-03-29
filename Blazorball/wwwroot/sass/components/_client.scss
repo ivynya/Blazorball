@@ -2,5 +2,53 @@
 /* Client */
 
 .client {
+    background-color: #292B3C;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
+    .info-bar {
+        position: relative;
+        width: 100%;
+        height: 70px;
+
+        .score {
+            background-color: #fff;
+            border-radius: 5px;
+            color: #000;
+            display: flex;
+            margin: auto;
+            padding: 10px;
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            width: 250px;
+
+            > * {
+                flex: 1 1;
+            }
+
+            img {
+                height: 45px;
+            }
+
+            h1 {
+                margin: 0;
+            }
+        }
+    }
+
+    h3 {
+        font-size: 18px;
+        margin: 0 10px;
+    }
+
+    @media screen and (min-width: 768px) {
+        h3 {
+            font-size: 2rem;
+        }
+    }
 }
