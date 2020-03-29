@@ -26,6 +26,10 @@
     </ul>
 </section>
 <section class="game @GameCSS">
+    <div class="game-info">
+        <h1 class="score"><span class="c-red">0</span> - <span class="c-blue">0</span></h1>
+        <h2 class="timer">3:00</h2>
+    </div>
     <canvas id="gameCanvas"></canvas>
 </section>
 
@@ -65,6 +69,7 @@
             LobbyCSS = "d-none";
             GameCSS = "";
             JSRuntime.InvokeAsync<object>("gamestart");
+            StateHasChanged();
         });
 
         await _hubConnection.StartAsync();

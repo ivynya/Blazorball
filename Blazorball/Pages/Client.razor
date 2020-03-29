@@ -5,7 +5,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
-<div class="text-center">
+<section class="text-center @PreGameCSS">
     <AnimatedHeader />
 
     <div class="@JoinCTACSS">
@@ -43,7 +43,10 @@
             </li>
         </ul>
     </div>
-</div>
+</section>
+<section class="client @GameControlsCSS">
+
+</section>
 
 @code {
     string JoinCTACSS;
@@ -54,6 +57,9 @@
     string TeamSelectorCSS = "d-none";
     private int _teamCount = 0;
     private Dictionary<string, int> _users = new Dictionary<string, int>();
+
+    string PreGameCSS;
+    string GameControlsCSS = "d-none";
 
     int? gamePIN;
     string userName;
@@ -95,6 +101,13 @@
         {
             _teamCount = teamCount;
             _users = JsonConvert.DeserializeObject<Dictionary<string, int>>(users);
+            StateHasChanged();
+        });
+
+        _hubConnection.On(Messages.StartGame, () =>
+        {
+            PreGameCSS = "d-none";
+            GameControlsCSS = "";
             StateHasChanged();
         });
 

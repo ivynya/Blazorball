@@ -2,6 +2,7 @@
 
 // Components
 
+@import 'components/client';
 @import 'components/game';
 @import 'components/joinCTA';
 @import 'components/lobbyHeader';
@@ -109,6 +110,14 @@ app {
 
 .g-red {
     background-image: linear-gradient(-45deg, #ff2c00, #ff9e00);
+}
+
+.c-blue {
+    color: #3498db;
+}
+
+.c-red {
+    color: #ff9e00;
 }
 
 .header {
