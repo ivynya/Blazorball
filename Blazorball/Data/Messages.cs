@@ -24,5 +24,7 @@ namespace Blazorball.Data
         public const string UpdateUsers = "UpdateUsers";
 
         public const string StartGame = "StartGame";
+
+        public const string HostDisconnected = "HostDisconnected";
     }
 }

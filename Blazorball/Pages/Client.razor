@@ -31,9 +31,9 @@
                 <li>
                     @{ int v = i; }   
                     <span class="list-header"><b>Team @i</b><button class="button" @onclick="() => JoinTeam(v)">Join</button></span>
-                    @foreach (var user in _users.Where(u => u.Value == i))
+                    @foreach (Player user in _users.Where(u => u.Team == i))
                     {
-                        <span>@user.Key</span>
+                        <span>@user.Username</span>
                     }
                 </li>
             }
@@ -63,7 +63,7 @@
 
     string TeamSelectorCSS = "d-none";
     private int _teamCount = 0;
-    private Dictionary<string, int> _users = new Dictionary<string, int>();
+    private List<Player> _users = new List<Player>();
 
     string PreGameCSS;
     string GameControlsCSS = "d-none";
@@ -107,7 +107,7 @@
         _hubConnection.On<int, string>(Messages.UpdateUsers, (teamCount, users) =>
         {
             _teamCount = teamCount;
-            _users = JsonConvert.DeserializeObject<Dictionary<string, int>>(users);
+            _users = JsonConvert.DeserializeObject<List<Player>>(users);
             StateHasChanged();
         });
 
@@ -129,10 +129,10 @@
         _hubConnection.SendAsync(Messages.JoinRoom, gamePIN, userName);
 
     Task CreateTeam() =>
-        _hubConnection.SendAsync(Messages.CreateTeam);
+        _hubConnection.SendAsync(Messages.CreateTeam, gamePIN);
 
     Task JoinTeam(int teamID) =>
-        _hubConnection.SendAsync(Messages.JoinTeam, teamID);
+        _hubConnection.SendAsync(Messages.JoinTeam, gamePIN, teamID);
 
     Task Stop() =>
         _hubConnection.StopAsync();

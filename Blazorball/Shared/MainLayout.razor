@@ -1,12 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
 <main class="main">
-    <div class="top-row px-4">
-        <a href="/about" class="btn btn-outline-info" onclick="disconnect()">About</a>
-        <a href="/" class="btn btn-outline-light" onclick="disconnect()">Home</a>
-    </div>
-
     <div class="content px-4">
         @Body
     </div>
+
+    <footer class="footer">
+        <p>&copy; Blazorball 2020</p>
+        <a href="/about" class="text-light" onclick="disconnect()">About</a>
+        <a href="/" class="text-light" onclick="disconnect()">Home</a>
+    </footer>
 </main>

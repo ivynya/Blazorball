@@ -4,6 +4,9 @@
 var halfWidth = window.innerWidth / 2;
 var halfHeight = window.innerHeight / 2;
 
+// World dynamic
+var ball;
+
 window.gamestart = () => {
     canvas = document.getElementById("gameCanvas");
 
@@ -37,16 +40,20 @@ window.gamestart = () => {
     World.add(engine.world, [top, bottom, left, right]);
 
     // Create ball object
-    var ball = Bodies.circle(halfWidth, halfHeight, 50);
+    ball = Bodies.circle(halfWidth, halfHeight, 50);
 
     // add bodies to the world
-    World.add(engine.world, [boxA, boxB, ball]);
+    World.add(engine.world, [ball]);
 
-    Matter.Body.applyForce(ball, ball.position, { x: 0.1, y: 0 });
 
     // run the engine
     Engine.run(engine);
 
     // run the renderer
     Render.run(render);
+    Matter.Body.applyForce(ball, ball.position, { x: 0.1, y: 0 });
+}
+
+function push() {
+    Matter.Body.applyForce(ball, ball.position, { x: 0.1, y: 0 });
 }

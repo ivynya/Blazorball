@@ -3,46 +3,37 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Blazorball.Hubs
 {
     public class MessageHub : Hub
     {
-        // Connection ID - Room Code
-        private static readonly Dictionary<string, int> hosts = new Dictionary<string, int>();
-        // Connection ID - [Room Code, Player Name]
-        private static readonly Dictionary<string, KeyValuePair<int, string>> clients = new Dictionary<string, KeyValuePair<int, string>>();
+        // Room Code - Room
+        private static readonly Dictionary<int, Room> rooms = new Dictionary<int, Room>();
 
-        // Room Code - [Player Name, Team Index]
-        public static readonly Dictionary<int, Dictionary<string, int>> players = new Dictionary<int, Dictionary<string, int>>();
-        // Room Code - Number of Teams
-        public static readonly Dictionary<int, int> teamCount = new Dictionary<int, int>();
-
-        // Host client registers a room. Returns SetRoomID + RoomID
+        // Host registers a room. Returns SetRoomID + RoomID to host.
         public async Task Register()
         {
             var currentId = Context.ConnectionId;
-            if (!hosts.ContainsKey(currentId))
+            if (!rooms.Values.Any(r => r.HostConnectionID == currentId))
             {
-                // Generate room code
-                int code = new Random().Next(10000, 100000);
+                // Create and register new room
+                Room newRoom = new Room(currentId);
+                int roomCode = new Random().Next(10000, 100000);
+                rooms.Add(roomCode, newRoom);
 
-                // Maintain lookup of rooms
-                hosts.Add(currentId, code);
-                players.Add(code, new Dictionary<string, int>());
-                teamCount.Add(code, 0);
-
-                // Send RoomID to host
-                await Clients.Caller.SendAsync(Messages.SetRoomID, code);
-                await Groups.AddToGroupAsync(Context.ConnectionId, code.ToString());
+                // Send RoomID to host and add to group
+                await Clients.Caller.SendAsync(Messages.SetRoomID, roomCode);
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
             }
         }
 
         // Checks if a room exists, returns true or false. Used by the client.
         public async Task VerifyRoom(int roomCode)
         {
-            if (hosts.ContainsValue(roomCode))
+            if (rooms.ContainsKey(roomCode))
                 await Clients.Caller.SendAsync(Messages.VerifyRoom, true);
             else
                 await Clients.Caller.SendAsync(Messages.VerifyRoom, false);
@@ -52,14 +43,15 @@ namespace Blazorball.Hubs
         public async Task JoinRoom(int roomCode, string userName)
         {
             // Check if room still exists
-            if (!hosts.ContainsValue(roomCode))
+            if (!rooms.ContainsKey(roomCode))
             {
                 await Clients.Caller.SendAsync(Messages.VerifyJoin, false, "Room no longer exists!");
                 return;
             }
 
             // Check name availability
-            if (players[roomCode].ContainsKey(userName))
+            Room room = rooms[roomCode];
+            if (room.Players.Any(p => p.Value.Username == userName))
             {
                 await Clients.Caller.SendAsync(Messages.VerifyJoin, false, "Name taken!");
                 return;
@@ -70,34 +62,31 @@ namespace Blazorball.Hubs
             await Clients.Caller.SendAsync(Messages.VerifyJoin, true, "");
 
             // Add client to lookups and update information
-            clients.Add(Context.ConnectionId, new KeyValuePair<int, string>(roomCode, userName));
-            players[roomCode].Add(userName, 0);
+            room.Players.Add(Context.ConnectionId, new Player(userName));
             await UpdateRoom(roomCode);
         }
 
         // Creates a new team in a room, and joins the client to that team
-        public async Task CreateTeam()
+        public async Task CreateTeam(int roomCode)
         {
-            int roomCode = clients[Context.ConnectionId].Key;
-            teamCount[roomCode] += 1;
-            players[roomCode][clients[Context.ConnectionId].Value] = teamCount[roomCode];
+            Room room = rooms[roomCode];
+            room.TeamCount++;
+            room.Players[Context.ConnectionId].Team = room.TeamCount;
 
             await UpdateRoom(roomCode);
         }
 
         // Joins a user to a team using clients to get room ID
-        public async Task JoinTeam(int teamID)
+        public async Task JoinTeam(int roomCode, int teamID)
         {
-            int roomCode = clients[Context.ConnectionId].Key;
-            players[roomCode][clients[Context.ConnectionId].Value] = teamID;
-
+            rooms[roomCode].Players[Context.ConnectionId].Team = teamID;
             await UpdateRoom(roomCode);
         }
 
         // Allows clients to see game controls, host to see game screen
         public async Task StartGame()
         {
-            int room = hosts[Context.ConnectionId];
+            int room = rooms.First(r => r.Value.HostConnectionID == Context.ConnectionId).Key;
             await Clients.Group(room.ToString()).SendAsync(Messages.StartGame);
         }
 
@@ -109,27 +98,35 @@ namespace Blazorball.Hubs
             // Try to get and remove lookup
             string id = Context.ConnectionId;
 
-            if (hosts.ContainsKey(id))
+            // Handle if connection was host
+            Room room = rooms.Values.First(r => r.HostConnectionID == Context.ConnectionId);
+            if (room != null)
             {
-                hosts.Remove(id);
-                await Groups.RemoveFromGroupAsync(id, hosts[id].ToString());
+                int code = rooms.First(r => r.Value == room).Key;
+                await Groups.RemoveFromGroupAsync(id, code.ToString());
+                await Clients.Group(code.ToString()).SendAsync(Messages.HostDisconnected);
+                rooms.Remove(code);
             }
 
-            if (clients.ContainsKey(id))
+            // Handle if connection was player
+            room = rooms.Values.First(r => r.Players.ContainsKey(Context.ConnectionId));
+            if (room != null)
             {
-                int roomCode = clients[id].Key;
-                players[roomCode].Remove(clients[id].Value);
-                await Groups.RemoveFromGroupAsync(id, roomCode.ToString());
-                await UpdateRoom(roomCode);
+                int code = rooms.First(r => r.Value == room).Key;
+                room.Players.Remove(Context.ConnectionId);
+                await Groups.RemoveFromGroupAsync(id, code.ToString());
+                await UpdateRoom(code);
             }
 
             await base.OnDisconnectedAsync(e);
         }
 
         // Updates the user list in a given room
-        private async Task UpdateRoom(int room)
+        private async Task UpdateRoom(int roomCode)
         {
-            await Clients.Group(room.ToString()).SendAsync(Messages.UpdateUsers, teamCount[room], JsonConvert.SerializeObject(players[room]));
+            Room room = rooms[roomCode];
+            string playersJSON = JsonConvert.SerializeObject(room.Players.Values.ToList());
+            await Clients.Group(roomCode.ToString()).SendAsync(Messages.UpdateUsers, room.TeamCount, playersJSON);
         }
     }
 }
