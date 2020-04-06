@@ -5,6 +5,7 @@
 @import 'components/client';
 @import 'components/game';
 @import 'components/joinCTA';
+@import 'components/animatedHeader';
 @import 'components/lobbyHeader';
 @import 'components/userList';
 
@@ -36,14 +37,9 @@ app {
 
 .main {
     flex: 1;
-    min-height: calc(100vh - 4rem);
+    min-height: 100vh;
     margin: auto;
-    margin-bottom: 4rem;
-}
-
-.content {
-    margin-top: 3.5rem;
-    padding-top: 1.1rem;
+    padding-top: 3rem;
 }
 
 .container {
@@ -54,7 +50,7 @@ app {
     display: flex;
     margin: auto;
     max-width: 700px;
-    margin-top: 80px;
+    margin-top: 30px;
     flex-direction: column;
 }
 
@@ -104,27 +100,18 @@ app {
 
 .header {
     > div {
-        margin-top: 2rem;
+        margin-top: 1rem;
     }
 
     h2 {
         margin-top: 2rem;
-    }
-
-    svg {
-        margin: auto;
-        width: 12rem;
-
-        path {
-            animation: color-pulse 5s infinite;
-        }
     }
 }
 
 .footer {
     height: 3.5rem;
     line-height: 3.5rem;
-    font-size: 20px;
+    font-size: 16px;
     text-align: center;
     position: absolute;
     bottom: 0;
@@ -205,6 +192,7 @@ input::-webkit-inner-spin-button {
     }
     .main {
         max-width: 768px;
+        padding-top: 5rem;
 
         > div {
             padding-left: 2rem !important;
@@ -213,9 +201,7 @@ input::-webkit-inner-spin-button {
     }
     .flex-container {
         flex-direction: row;
-    }
-    .header svg {
-        width: 20rem;
+        margin-top: 60px;
     }
     .footer {
         > a {
