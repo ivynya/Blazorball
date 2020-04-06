@@ -44,7 +44,7 @@
         </ul>
     </div>
 </section>
-<section class="client @GameControlsCSS">
+<section id="client" class="client @GameControlsCSS">
     <div class="info-bar g-red">
         <div class="score">
             <img src="/img/fire.svg" alt="Unit Icon" />
@@ -115,6 +115,7 @@
         {
             PreGameCSS = "d-none";
             GameControlsCSS = "";
+            JSRuntime.InvokeAsync<object>("fullscreen");
             StateHasChanged();
         });
 

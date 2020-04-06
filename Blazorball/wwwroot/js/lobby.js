@@ -1,5 +1,9 @@
 ﻿var canvas;
 
+// World static
+var halfWidth = window.innerWidth / 2;
+var halfHeight = window.innerHeight / 2;
+
 window.gamestart = () => {
     canvas = document.getElementById("gameCanvas");
 
@@ -23,21 +27,22 @@ window.gamestart = () => {
     });
 
     // World options
-    engine.world.gravity.y = 0.2;
+    engine.world.gravity.y = 0;
 
     // Create bounding box
-    var top = Bodies.rectangle(window.innerWidth / 2, 0, window.innerWidth, 1, { isStatic: true });
-    var bottom = Bodies.rectangle(window.innerWidth / 2, window.innerHeight, window.innerWidth, 1, { isStatic: true });
-    var left = Bodies.rectangle(0, window.innerHeight / 2, 1, window.innerHeight, { isStatic: true });
-    var right = Bodies.rectangle(window.innerWidth, window.innerHeight / 2, 1, window.innerHeight, { isStatic: true });
+    var top = Bodies.rectangle(halfWidth, 0, window.innerWidth, 1, { isStatic: true });
+    var bottom = Bodies.rectangle(halfWidth, window.innerHeight, window.innerWidth, 1, { isStatic: true });
+    var left = Bodies.rectangle(0, halfHeight, 1, window.innerHeight, { isStatic: true });
+    var right = Bodies.rectangle(window.innerWidth, halfHeight, 1, window.innerHeight, { isStatic: true });
     World.add(engine.world, [top, bottom, left, right]);
 
-    // create two boxes
-    var boxA = Bodies.rectangle(800, 200, 80, 80);
-    var boxB = Bodies.rectangle(450, 50, 80, 80);
+    // Create ball object
+    var ball = Bodies.circle(halfWidth, halfHeight, 50);
 
     // add bodies to the world
-    World.add(engine.world, [boxA, boxB]);
+    World.add(engine.world, [boxA, boxB, ball]);
+
+    Matter.Body.applyForce(ball, ball.position, { x: 0.1, y: 0 });
 
     // run the engine
     Engine.run(engine);
