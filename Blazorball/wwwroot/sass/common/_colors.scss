@@ -2,17 +2,43 @@
 /* Color components */
 
 .g-blue {
-    background-image: linear-gradient(-45deg, #2c3e50, #3498db);
+    background-color: #16a;
+
+    &:hover {
+        background-color: #38c;
+    }
 }
 
 .g-red {
-    background-image: linear-gradient(-45deg, #ff2c00, #ff9e00);
+    background-color: #d60;
+
+    &:hover {
+        background-color: #f80;
+    }
 }
 
 .c-blue {
-    color: #3498db;
+    color: #38c;
 }
 
 .c-red {
-    color: #ff9e00;
+    color: #f80;
+}
+
+@keyframes color-pulse {
+    0% {
+        fill: #f63;
+    }
+
+    35% {
+        fill: #ff9e00;
+    }
+
+    65% {
+        fill: #ffd800;
+    }
+
+    100% {
+        fill: #f63;
+    }
 }
