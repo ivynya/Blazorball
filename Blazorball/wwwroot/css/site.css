@@ -141,14 +141,12 @@
 }
 
 /* Animated Header */
-.animated-header > div {
-  margin-top: 1rem;
-}
 .animated-header h2 {
   margin-top: 2rem;
 }
 .animated-header svg {
   margin: auto;
+  margin-top: 1rem;
   width: 8rem;
 }
 @media screen and (min-width: 768px) {
@@ -260,12 +258,6 @@ hr {
   background-color: #fff;
 }
 
-app {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
 .main {
   flex: 1;
   min-height: 100vh;
@@ -374,10 +366,6 @@ input::-webkit-inner-spin-button {
 @media (min-width: 768px) {
   h2 {
     font-size: 28px;
-  }
-
-  app {
-    flex-direction: row;
   }
 
   .main {
