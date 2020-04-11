@@ -24,8 +24,8 @@ namespace Blazorball.Hubs
                 int roomCode = new Random().Next(10000, 100000);
                 rooms.Add(roomCode, newRoom);
 
-                // Send RoomID to host and add to group
-                await Clients.Caller.SendAsync(Messages.SetRoomID, roomCode);
+                // Send RoomID and default team count to host and add to group
+                await Clients.Caller.SendAsync(Messages.SetRoomID, roomCode, newRoom.TeamCount);
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
             }
         }
@@ -59,7 +59,7 @@ namespace Blazorball.Hubs
 
             // Verify connection
             await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
-            await Clients.Caller.SendAsync(Messages.VerifyJoin, true, "");
+            await Clients.Caller.SendAsync(Messages.VerifyJoin, true, room.PlayerCanCreateTeams, "");
 
             // Add client to lookups and update information
             room.Players.Add(Context.ConnectionId, new Player(userName));
@@ -99,7 +99,7 @@ namespace Blazorball.Hubs
             string id = Context.ConnectionId;
 
             // Handle if connection was host
-            Room room = rooms.Values.First(r => r.HostConnectionID == Context.ConnectionId);
+            Room room = rooms.Values.FirstOrDefault(r => r.HostConnectionID == Context.ConnectionId);
             if (room != null)
             {
                 int code = rooms.First(r => r.Value == room).Key;
@@ -109,7 +109,7 @@ namespace Blazorball.Hubs
             }
 
             // Handle if connection was player
-            room = rooms.Values.First(r => r.Players.ContainsKey(Context.ConnectionId));
+            room = rooms.Values.FirstOrDefault(r => r.Players.ContainsKey(Context.ConnectionId));
             if (room != null)
             {
                 int code = rooms.First(r => r.Value == room).Key;

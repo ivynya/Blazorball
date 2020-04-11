@@ -23,13 +23,14 @@
         <span>@Validation</span>
     </div>
 
+    <br />
     <div class="@TeamSelectorCSS">
         <h3>Joined as: @userName</h3>
         <ul id="userList">
             @for (int i = 1; i <= _teamCount; i++)
             {
                 <li>
-                    @{ int v = i; }   
+                    @{ int v = i; }
                     <span class="list-header"><b>Team @i</b><button class="button" @onclick="() => JoinTeam(v)">Join</button></span>
                     @foreach (Player user in _users.Where(u => u.Team == i))
                     {
@@ -37,10 +38,13 @@
                     }
                 </li>
             }
-            <li>
-                <span class="list-header"><b>Create New Team</b></span>
-                <button class="button g-red" @onclick="CreateTeam">Create and Join</button>
-            </li>
+            @if (CanCreateTeams)
+            {
+                <li>
+                    <span class="list-header"><b>Create New Team</b></span>
+                    <button class="button g-red" @onclick="CreateTeam">Create and Join</button>
+                </li>
+            }
         </ul>
     </div>
 </section>
@@ -52,7 +56,10 @@
         </div>
     </div>
     <br /><br />
-    <h3 class="text-center">You are on team <b>Color</b>'s <b>Polygon</b> as the <b>Color</b> arm.</h3>
+    <h3 class="text-center">You are team <b>Color</b>'s <b>Color</b> <b>Polygon</b></h3>
+    <div class="flex-container">
+        <canvas id="controlsCanvas"></canvas>
+    </div>
 </section>
 
 @code {
@@ -60,6 +67,7 @@
     string GamePINCSS;
     string UserNameCSS = "d-none";
     string Validation;
+    bool CanCreateTeams = false;
 
     string TeamSelectorCSS = "d-none";
     private int _teamCount = 0;
@@ -90,13 +98,14 @@
             StateHasChanged();
         });
 
-        _hubConnection.On<bool, string>(Messages.VerifyJoin, (validated, message) =>
+        _hubConnection.On<bool, bool, string>(Messages.VerifyJoin, (validated, canCreateTeams, message) =>
         {
             if (!validated) Validation = message;
             else
             {
                 JoinCTACSS = "d-none";
                 TeamSelectorCSS = "";
+                CanCreateTeams = canCreateTeams;
 
                 // Add JS Interop to handle disconnections
                 JSRuntime.InvokeAsync<object>("createref", DotNetObjectReference.Create(this));
@@ -116,6 +125,7 @@
             PreGameCSS = "d-none";
             GameControlsCSS = "";
             JSRuntime.InvokeAsync<object>("fullscreen");
+            JSRuntime.InvokeAsync<object>("initcontrols");
             StateHasChanged();
         });
 

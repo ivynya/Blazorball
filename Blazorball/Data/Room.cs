@@ -9,13 +9,15 @@ namespace Blazorball.Data
         {
             HostConnectionID = hostConnectionID;
             Players = new Dictionary<string, Player>();
-            TeamCount = 0;
+            PlayerCanCreateTeams = false;
+            TeamCount = 2;
         }
 
         public string HostConnectionID { get; set; }
 
         // Connection ID - Player
         public Dictionary<string, Player> Players { get; set; }
+        public bool PlayerCanCreateTeams { get; set; }
         public int TeamCount { get; set; }
     }
 }
