@@ -1,5 +1,6 @@
 ﻿using Blazorball.Data;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -57,12 +58,18 @@ namespace Blazorball.Hubs
                 return;
             }
 
-            // Verify connection
+            // Verify connection with client
             await Groups.AddToGroupAsync(Context.ConnectionId, roomCode.ToString());
-            await Clients.Caller.SendAsync(Messages.VerifyJoin, true, room.PlayerCanCreateTeams, "");
+            await Clients.Caller.SendAsync(Messages.VerifyJoin, true, "");
+
+            // Generate player ID and send settings
+            int id = 0;
+            if (room.Players.Count != 0)
+                id = room.Players.Last().Value.Id + 1;
+            await Clients.Caller.SendAsync(Messages.VerifySettings, room.PlayerCanCreateTeams, id);
 
             // Add client to lookups and update information
-            room.Players.Add(Context.ConnectionId, new Player(userName));
+            room.Players.Add(Context.ConnectionId, new Player(id, userName));
             await UpdateRoom(roomCode);
         }
 

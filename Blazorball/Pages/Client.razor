@@ -78,6 +78,8 @@
 
     int? gamePIN;
     string userName;
+    int playerID;
+    int teamID;
 
     private HubConnection _hubConnection;
 
@@ -98,18 +100,24 @@
             StateHasChanged();
         });
 
-        _hubConnection.On<bool, bool, string>(Messages.VerifyJoin, (validated, canCreateTeams, message) =>
+        _hubConnection.On<bool, string>(Messages.VerifyJoin, (validated, message) =>
         {
             if (!validated) Validation = message;
             else
             {
                 JoinCTACSS = "d-none";
                 TeamSelectorCSS = "";
-                CanCreateTeams = canCreateTeams;
 
                 // Add JS Interop to handle disconnections
                 JSRuntime.InvokeAsync<object>("createref", DotNetObjectReference.Create(this));
             }
+            StateHasChanged();
+        });
+
+        _hubConnection.On<bool, int>(Messages.VerifySettings, (canCreateTeams, id) =>
+        {
+            CanCreateTeams = canCreateTeams;
+            playerID = id;
             StateHasChanged();
         });
 
@@ -141,8 +149,10 @@
     Task CreateTeam() =>
         _hubConnection.SendAsync(Messages.CreateTeam, gamePIN);
 
-    Task JoinTeam(int teamID) =>
-        _hubConnection.SendAsync(Messages.JoinTeam, gamePIN, teamID);
+    async Task JoinTeam(int id) {
+        teamID = id;
+        await _hubConnection.SendAsync(Messages.JoinTeam, gamePIN, teamID);
+    }
 
     Task Stop() =>
         _hubConnection.StopAsync();

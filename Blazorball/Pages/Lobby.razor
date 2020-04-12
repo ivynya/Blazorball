@@ -73,7 +73,7 @@
         {
             LobbyCSS = "d-none";
             GameCSS = "";
-            JSRuntime.InvokeAsync<object>("gamestart");
+            JSRuntime.InvokeAsync<object>("gamestart", JsonConvert.SerializeObject(_users));
             StateHasChanged();
         });
 

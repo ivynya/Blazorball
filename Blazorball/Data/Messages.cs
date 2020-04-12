@@ -19,6 +19,8 @@ namespace Blazorball.Data
 
         public const string VerifyJoin = "VerifyJoin";
 
+        public const string VerifySettings = "VerifySettings";
+
         public const string CreateTeam = "CreateTeam";
 
         public const string JoinTeam = "JoinTeam";
