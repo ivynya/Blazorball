@@ -73,7 +73,10 @@
         {
             LobbyCSS = "d-none";
             GameCSS = "";
-            JSRuntime.InvokeAsync<object>("gamestart", JsonConvert.SerializeObject(_users));
+
+            int teamACount = _users.Where(p => p.Team == 1).Count();
+            int teamBCount = _users.Where(p => p.Team == 2).Count();
+            JSRuntime.InvokeAsync<object>("gamestart", JsonConvert.SerializeObject(_users), teamACount, teamBCount);
             StateHasChanged();
         });
 

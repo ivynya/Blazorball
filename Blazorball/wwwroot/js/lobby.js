@@ -1,16 +1,14 @@
 ﻿
-// World static
+// World
 var engine;
-var halfWidth = window.innerWidth / 2;
-var halfHeight = window.innerHeight / 2;
-
-// World dynamic
 var playerDict = {};
 var ball;
 
-window.gamestart = (playerList) => {
-    // Get game canvas
+window.gamestart = (playerList, teamCountA, teamCountB) => {
+    // Get game canvas and window info
     var gameCanvas = document.getElementById("gameCanvas");
+    var halfWidth = window.innerWidth / 2;
+    var halfHeight = window.innerHeight / 2;
 
     // module aliases
     var Engine = Matter.Engine,
@@ -28,6 +26,7 @@ window.gamestart = (playerList) => {
         options: {
             height: window.innerHeight,
             width: window.innerWidth,
+            wireframes: false,
             showVelocity: true
         }
     });
@@ -44,14 +43,27 @@ window.gamestart = (playerList) => {
     ]);
 
     // Create ball object
-    ball = Bodies.circle(halfWidth, halfHeight, 50);
+    ball = Bodies.circle(halfWidth, halfHeight, 40, { render: { fillStyle: 'white' } });
 
     // add bodies to the world
     World.add(engine.world, [ball]);
 
     var players = JSON.parse(playerList);
+    var indexA = 1, indexB = 1;
+    var teamAHeight = window.innerHeight / (teamCountA + 1);
+    var teamBHeight = window.innerHeight / (teamCountB + 1);
     players.forEach((player) => {
-        var playerObject = Bodies.circle((3 / 2) * halfWidth, halfHeight, 70);
+        var playerObject;
+        if (player.Team == 1) {
+            var xPos = (1 / 2 * halfWidth), yPos = (teamAHeight * indexA);
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 60, { render: { fillStyle: 'orange' }, angle: 3.14 });
+            indexA++;
+        }
+        else if (player.Team == 2) {
+            var xPos = (3 / 2 * halfWidth), yPos = (teamBHeight * indexB);
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 60, { render: { fillStyle: 'teal' } });
+            indexB++;
+        }
         World.add(engine.world, playerObject);
         playerDict[player.Id] = playerObject;
     });

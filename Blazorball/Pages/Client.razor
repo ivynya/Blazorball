@@ -49,14 +49,14 @@
     </div>
 </section>
 <section id="client" class="client @GameControlsCSS">
-    <div class="info-bar g-red">
+    <div class="info-bar @TeamColorCSS">
         <div class="score">
             <img src="/img/fire.svg" alt="Unit Icon" />
             <h1><span class="c-red">0</span> - <span class="c-blue">0</span></h1>
         </div>
     </div>
     <br /><br />
-    <h3 class="text-center">You are team <b>Color</b>'s <b>Color</b> <b>Polygon</b></h3>
+    <h3 class="text-center">You are team <b>@TeamName</b>'s <b>Color</b> <b>Polygon</b></h3>
     <div class="flex-container">
         <canvas id="controlsCanvas"></canvas>
     </div>
@@ -75,6 +75,9 @@
 
     string PreGameCSS;
     string GameControlsCSS = "d-none";
+
+    string TeamColorCSS;
+    string TeamName;
 
     int? gamePIN;
     string userName;
@@ -151,6 +154,8 @@
 
     async Task JoinTeam(int id) {
         teamID = id;
+        TeamColorCSS = (teamID == 1) ? "g-red" : "g-blue";
+        TeamName = (teamID == 1) ? "Orange" : "Blue";
         await _hubConnection.SendAsync(Messages.JoinTeam, gamePIN, teamID);
     }
 
