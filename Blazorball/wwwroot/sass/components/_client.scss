@@ -41,6 +41,11 @@
         }
     }
 
+    #controlsCanvas {
+        background-image: radial-gradient(circle at center, #556, #fff 100%);
+        border-radius: 50%;
+    }
+
     h3 {
         font-size: 18px;
         margin: 0 10px;
