@@ -107,9 +107,10 @@ function getTouchPos(e) {
     if (e.touches) {
         if (e.touches.length === 1) {
             var touch = e.touches[0];
+            var canvasRect = clientCanvas.getBoundingClientRect();
 
-            touchX = touch.pageX;
-            touchY = touch.pageY;
+            touchX = touch.pageX - canvasRect.left;
+            touchY = touch.pageY - canvasRect.top;
         }
     }
 }
