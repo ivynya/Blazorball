@@ -43,7 +43,7 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
     ]);
 
     // Create ball object
-    ball = Bodies.circle(halfWidth, halfHeight, 40, { render: { fillStyle: 'white' } });
+    ball = Bodies.circle(halfWidth, halfHeight, 40, { render: { fillStyle: 'white' }, restitution: 0.6 });
 
     // add bodies to the world
     World.add(engine.world, [ball]);
@@ -56,12 +56,12 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         var playerObject;
         if (player.Team == 1) {
             var xPos = (1 / 2 * halfWidth), yPos = (teamAHeight * indexA);
-            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 60, { render: { fillStyle: 'orange' }, angle: 3.14 });
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 60, { render: { fillStyle: 'orange' }, angle: 3.14, restitution: 1 });
             indexA++;
         }
         else if (player.Team == 2) {
             var xPos = (3 / 2 * halfWidth), yPos = (teamBHeight * indexB);
-            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 60, { render: { fillStyle: 'teal' } });
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 60, { render: { fillStyle: 'teal' }, restitution: 1 });
             indexB++;
         }
         World.add(engine.world, playerObject);
