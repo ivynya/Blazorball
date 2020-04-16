@@ -24,11 +24,20 @@ window.initcontrols = () => {
     }
 }
 
+// Debounce bool
+var canSend = true;
+
 // Use interop ref from interop.js
 function pushVector(vx, vy) {
     console.log(vx);
     console.log(vy);
-    if (instance) instance.invokeMethodAsync('PushVector', vx, vy);
+    if (instance && canSend) {
+        instance.invokeMethodAsync('PushVector', vx, vy);
+        canSend = false;
+        setTimeout(() => {
+            canSend = true;
+        }, 1000 / (1 - Math.max(vx, vy)));
+    }
 }
 
 // Code I wrote for last year's math project, adapted for
@@ -110,6 +119,11 @@ function sketchpad_touchEnd() {
     ctx.clearRect(0, 0, clientCanvas.width, clientCanvas.height);
 
     // Push vector
+    if (vectorX && vectorY) {
+        pushVector(vectorX, vectorY);
+        vectorX = null;
+        vectorY = null;
+    }
 }
 
 function sketchpad_touchMove(e) {
