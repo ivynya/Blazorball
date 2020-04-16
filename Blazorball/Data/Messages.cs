@@ -25,6 +25,12 @@ namespace Blazorball.Data
 
         public const string JoinTeam = "JoinTeam";
 
+        // Client game methods
+        public const string PushVector = "PushVector";
+
+        // Host game methods
+        public const string ApplyVector = "ApplyVector";
+
         // Generic user methods
         public const string UpdateUsers = "UpdateUsers";
 

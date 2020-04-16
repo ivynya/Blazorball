@@ -111,7 +111,7 @@
                 JoinCTACSS = "d-none";
                 TeamSelectorCSS = "";
 
-                // Add JS Interop to handle disconnections
+                // Add JS Interop
                 JSRuntime.InvokeAsync<object>("createref", DotNetObjectReference.Create(this));
             }
             StateHasChanged();
@@ -158,6 +158,10 @@
         TeamName = (teamID == 1) ? "Orange" : "Blue";
         await _hubConnection.SendAsync(Messages.JoinTeam, gamePIN, teamID);
     }
+
+    [JSInvokable]
+    public async Task PushVector(double vx, double vy) =>
+        await _hubConnection.SendAsync(Messages.PushVector, gamePIN, playerID, vx, vy);
 
     Task Stop() =>
         _hubConnection.StopAsync();

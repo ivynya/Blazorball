@@ -24,10 +24,18 @@ window.initcontrols = () => {
     }
 }
 
+// Use interop ref from interop.js
+function pushVector(vx, vy) {
+    console.log(vx);
+    console.log(vy);
+    if (instance) instance.invokeMethodAsync('PushVector', vx, vy);
+}
+
 // Code I wrote for last year's math project, adapted for
 // a completely unrelated purpose. Now this is pod racing!
 
 var mouseX, mouseY, mouseDown;
+var vectorX, vectorY;
 
 // Draws a dot and line on canvas and calculates vector from center
 function drawDot(ctx, x, y, size) {
@@ -49,7 +57,9 @@ function drawDot(ctx, x, y, size) {
     ctx.closePath();
     ctx.stroke();
 
-    // Calculate vector from center
+    // Calculate unit vector from center
+    vectorX = (x - canvasCenter.x) / clientCanvas.width;
+    vectorY = (y - canvasCenter.y) / clientCanvas.height;
 }
 
 // Sketchpad mouse functions
@@ -64,7 +74,12 @@ function sketchpad_mouseUp() {
     // Clear canvas
     ctx.clearRect(0, 0, clientCanvas.width, clientCanvas.height);
 
-    // Push vector to server
+    // Push vector to server and clear
+    if (vectorX && vectorY) {
+        pushVector(vectorX, vectorY);
+        vectorX = null;
+        vectorY = null;
+    }
 }
 
 function sketchpad_mouseMove(e) {
@@ -91,6 +106,9 @@ function sketchpad_touchStart() {
 }
 
 function sketchpad_touchEnd() {
+    // Clear canvas
+    ctx.clearRect(0, 0, clientCanvas.width, clientCanvas.height);
+
     // Push vector
 }
 

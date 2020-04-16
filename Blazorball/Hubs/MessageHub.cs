@@ -1,5 +1,6 @@
 ﻿using Blazorball.Data;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using Newtonsoft.Json;
 using System;
@@ -88,6 +89,12 @@ namespace Blazorball.Hubs
         {
             rooms[roomCode].Players[Context.ConnectionId].Team = teamID;
             await UpdateRoom(roomCode);
+        }
+
+        public async Task PushVector(int roomCode, int playerID, double x, double y)
+        {
+            string hostConnectionID = rooms[roomCode].HostConnectionID;
+            await Clients.Client(hostConnectionID).SendAsync(Messages.ApplyVector, playerID, x, y);
         }
 
         // Allows clients to see game controls, host to see game screen

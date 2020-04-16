@@ -58,7 +58,7 @@
             _teamCount = defaultTeamCount;
             StateHasChanged();
 
-            // Add JS Interop to handle disconnections
+            // Add JS Interop
             JSRuntime.InvokeAsync<object>("createref", DotNetObjectReference.Create(this));
         });
 
@@ -78,6 +78,10 @@
             int teamBCount = _users.Where(p => p.Team == 2).Count();
             JSRuntime.InvokeAsync<object>("gamestart", JsonConvert.SerializeObject(_users), teamACount, teamBCount);
             StateHasChanged();
+        });
+
+        _hubConnection.On<int, double, double>(Messages.ApplyVector, (playerID, x, y) => {
+            JSRuntime.InvokeAsync<object>("applyplayerforce", playerID, x, y);
         });
 
         await _hubConnection.StartAsync();
