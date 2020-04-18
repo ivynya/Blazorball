@@ -76,12 +76,6 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
 }
 
 window.applyplayerforce = (playerID, xF, yF) => {
-    console.log(xF);
-    console.log(yF);
     var playerObj = playerDict[playerID];
     Matter.Body.applyForce(playerObj, playerObj.position, { x: xF, y: yF });
-} 
-
-function push() {
-    Matter.Body.applyForce(ball, ball.position, { x: 0.5, y: 0 });
 }

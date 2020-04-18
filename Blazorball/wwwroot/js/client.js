@@ -36,7 +36,7 @@ function pushVector(vx, vy) {
         canSend = false;
         setTimeout(() => {
             canSend = true;
-        }, 1000 / (1 - Math.max(vx, vy)));
+        }, 200);
     }
 }
 
