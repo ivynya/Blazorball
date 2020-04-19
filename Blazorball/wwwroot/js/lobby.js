@@ -8,6 +8,7 @@ var leftGoal, rightGoal;
 var playerDict = {};
 var orangeScore = 0, blueScore = 0;
 
+// Disable player input until game starts
 var acceptPlayerInput = false;
 window.gamestart = (playerList, teamCountA, teamCountB) => {
     // Get game canvas and window info
@@ -129,6 +130,7 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
     }, 1200);
 }
 
+// Run a game timer for 3 minutes after game start
 var tRemaining = 180;
 function runGameTimer() {
     var gameTimer = setInterval(() => {
@@ -142,6 +144,7 @@ function runGameTimer() {
     }, 1000);
 }
 
+// Trigger goal text and reset ball
 function triggerGoal() {
 
 }

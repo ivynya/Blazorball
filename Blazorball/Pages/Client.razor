@@ -56,7 +56,7 @@
         </div>
     </div>
     <br /><br />
-    <h3 class="text-center">You are team <b>@TeamName</b>'s <b>@Common.PolygonNames[playerID + 3]</b></h3>
+    <h3 class="text-center">You are team <b>@TeamName</b>'s <b>@PolygonName</b></h3>
     <div class="flex-container">
         <canvas id="controlsCanvas"></canvas>
     </div>
@@ -76,8 +76,10 @@
     string PreGameCSS;
     string GameControlsCSS = "d-none";
 
+    // Info bar
     string TeamColorCSS;
     string TeamName;
+    string PolygonName;
 
     int? gamePIN;
     string userName;
@@ -135,6 +137,12 @@
         {
             PreGameCSS = "d-none";
             GameControlsCSS = "";
+
+            // Set client's polygon name
+            Player currentPlayer = _users.First(p => p.Id == playerID);
+            List<Player> teamPlayers = _users.Where(p => p.Team == teamID).ToList();
+            PolygonName = Common.PolygonNames[teamPlayers.IndexOf(currentPlayer) + 3];
+
             JSRuntime.InvokeAsync<object>("fullscreen");
             JSRuntime.InvokeAsync<object>("initcontrols");
             StateHasChanged();
