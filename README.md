@@ -6,10 +6,10 @@ The game is designed to be played in person or over a group call with screenshar
 
 # Currently WIP
 
-Currently, the teams management and joining is implemented to the webapp, in addition to the implementation of matterjs and some start-of-game things like showing the client UI, building the world, etc. However, any actual gameplay is not finished, so it'll be quite a boring gameplay experience! This will get finished and perfected over the next two weeks.
+A large percentage of the game is implemented but core features are still missing. Teams management and joining a room is entirely functional. Core gameplay is essentially finished. However, things such as updating client scores, end-of-game screens, rematches within the same room, better error handling, and more still need to be implemented. This will come over the next week or so.
 
 # Setup
 
 If you just want to play the game, it is available at [https://blazorball.xyz](https://blazorball.xyz) and you need to do none of these steps.
 
-To build and run this project, you need .NET Core 3.1 installed on your system and something like Visual Studio to open the project. This project is also configured to use Docker. You will need Docker tools installed to compile and run with Docker.
+To build and run this project, you need .NET Core 3.1 installed on your system and something like Visual Studio 2019 to open the project. This project is also configured to use Docker. You will need Docker tools installed to compile and run with Docker.
