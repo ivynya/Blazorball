@@ -135,6 +135,8 @@
   border-radius: 1rem;
   padding: 1rem 5rem;
   text-align: center;
+  opacity: 0;
+  transition-duration: 0.5s;
 }
 .game .text-overlay #gameEndSummary h2 {
   font-size: 8rem;

@@ -71,7 +71,7 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
     ]);
 
     // Create ball object
-    ball = Bodies.circle(halfWidth, halfHeight, 35, { render: { fillStyle: 'white' }, restitution: 0.7 });
+    ball = Bodies.circle(halfWidth, halfHeight, 35, { render: { fillStyle: 'white' }, restitution: 1 });
     World.add(engine.world, [ball]);
 
     // Add player objects to world
@@ -83,12 +83,12 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         var playerObject;
         if (player.Team == 1) {
             let xPos = (1 / 2 * halfWidth), yPos = (teamAHeight * indexA);
-            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 60, { render: { fillStyle: 'orange' }, angle: 3.14, restitution: 1 });
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 70, { render: { fillStyle: 'orange' }, angle: 3.14, restitution: 0.8 });
             indexA++;
         }
         else if (player.Team == 2) {
             let xPos = (3 / 2 * halfWidth), yPos = (teamBHeight * indexB);
-            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 60, { render: { fillStyle: 'teal' }, restitution: 1 });
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 70, { render: { fillStyle: 'teal' }, restitution: 0.8 });
             indexB++;
         }
         World.add(engine.world, playerObject);
@@ -111,12 +111,12 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         let bX = ball.position.x;
         let bY = ball.position.y;
         if (bX < wSpacing * 0.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
-            orangeScore++;
+            blueScore++;
             updateScore(orangeScore, blueScore);
             triggerGoal();
         }
         else if (bX > wSpacing * 7.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
-            blueScore++;
+            orangeScore++;
             updateScore(orangeScore, blueScore);
             triggerGoal();
         }
@@ -153,6 +153,7 @@ function runGameTimer() {
             clearInterval(gameTimer);
             acceptPlayerInput = false;
             document.getElementById("gameEndSummary").style.display = "unset";
+            document.getElementById("gameEndSummary").style.opacity = 1;
         }
     }, 1000);
 }
