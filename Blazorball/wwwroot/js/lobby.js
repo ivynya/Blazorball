@@ -1,8 +1,12 @@
 ﻿
 // World
 var engine;
-var playerDict = {};
 var ball;
+var leftGoal, rightGoal;
+
+// Game
+var playerDict = {};
+var orangeScore = 0, blueScore = 0;
 
 var acceptPlayerInput = false;
 window.gamestart = (playerList, teamCountA, teamCountB) => {
@@ -43,22 +47,27 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         Bodies.rectangle(window.innerWidth, halfHeight, 1, window.innerHeight, { isStatic: true })
     ]);
 
-    // Create goal boxes
+    // Create goal posts
     var hSpacing = window.innerHeight / 8;
     var wSpacing = window.innerWidth / 8;
     World.add(engine.world, [
         // Left goal
         Bodies.rectangle(0, hSpacing * 3, wSpacing, 2, { isStatic: true, render: { fillStyle: 'white' } }),
-        Bodies.rectangle(0, 4 * hSpacing + 1, wSpacing, hSpacing * 2, { isStatic: true, render: { fillStyle: '#f80a' }, collisionFilter: { mask: -2, group: 1 } }),
         Bodies.rectangle(0, hSpacing * 5, wSpacing, 2, { isStatic: true, render: { fillStyle: 'white' } }),
         // Right goal
         Bodies.rectangle(window.innerWidth, hSpacing * 3, wSpacing, 2, { isStatic: true, render: { fillStyle: 'white' } }),
-        Bodies.rectangle(window.innerWidth, 4 * hSpacing + 1, wSpacing, hSpacing * 2, { isStatic: true, render: { fillStyle: '#38ca' }, collisionFilter: { mask: -2, group: 1 } }),
-        Bodies.rectangle(window.innerWidth, hSpacing * 5, wSpacing, 2, { isStatic: true, render: { fillStyle: 'white' } }),
+        Bodies.rectangle(window.innerWidth, hSpacing * 5, wSpacing, 2, { isStatic: true, render: { fillStyle: 'white' } })
+    ]);
+
+    // Create and set goal boxes
+    leftGoal = Bodies.rectangle(0, 4 * hSpacing + 1, wSpacing, hSpacing * 2, { isStatic: true, render: { fillStyle: '#f80a' }, collisionFilter: { mask: -2, group: 1 } });
+    rightGoal = Bodies.rectangle(window.innerWidth, 4 * hSpacing + 1, wSpacing, hSpacing * 2, { isStatic: true, render: { fillStyle: '#38ca' }, collisionFilter: { mask: -2, group: 1 } });
+    World.add(engine.world, [
+        leftGoal, rightGoal
     ]);
 
     // Create ball object
-    ball = Bodies.circle(halfWidth, halfHeight, 40, { render: { fillStyle: 'white' }, restitution: 0.7 });
+    ball = Bodies.circle(halfWidth, halfHeight, 35, { render: { fillStyle: 'white' }, restitution: 0.7 });
     World.add(engine.world, [ball]);
 
     // Add player objects to world
@@ -69,13 +78,13 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
     players.forEach((player) => {
         var playerObject;
         if (player.Team == 1) {
-            var xPos = (1 / 2 * halfWidth), yPos = (teamAHeight * indexA);
-            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 70, { render: { fillStyle: 'orange' }, angle: 3.14, restitution: 1 });
+            let xPos = (1 / 2 * halfWidth), yPos = (teamAHeight * indexA);
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexA, 60, { render: { fillStyle: 'orange' }, angle: 3.14, restitution: 1 });
             indexA++;
         }
         else if (player.Team == 2) {
-            var xPos = (3 / 2 * halfWidth), yPos = (teamBHeight * indexB);
-            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 70, { render: { fillStyle: 'teal' }, restitution: 1 });
+            let xPos = (3 / 2 * halfWidth), yPos = (teamBHeight * indexB);
+            playerObject = Bodies.polygon(xPos, yPos, 2 + indexB, 60, { render: { fillStyle: 'teal' }, restitution: 1 });
             indexB++;
         }
         World.add(engine.world, playerObject);
@@ -87,6 +96,20 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
 
     // run the renderer
     Render.run(render);
+
+    // Register ball goal event handler
+    Matter.Events.on(render, 'afterRender', (event) => {
+        let bX = ball.position.x;
+        let bY = ball.position.y;
+        if (bX < wSpacing * 0.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
+            orangeScore++;
+            document.getElementById("scoreRed").innerText = orangeScore;
+        }
+        else if (bX > wSpacing * 7.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
+            blueScore++;
+            document.getElementById("scoreBlue").innerText = blueScore;
+        }
+    });
 
     // Countdown text
     var ct = 2;
@@ -100,10 +123,10 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
                 document.getElementById("countdownText").style.display = "none";
                 acceptPlayerInput = true;
                 runGameTimer();
-            }, 1500);
+            }, 1200);
         }
         ct--;
-    }, 1500);
+    }, 1200);
 }
 
 var tRemaining = 180;
@@ -119,8 +142,12 @@ function runGameTimer() {
     }, 1000);
 }
 
+function triggerGoal() {
+
+}
+
 window.applyplayerforce = (playerID, xF, yF) => {
     if (!acceptPlayerInput) return;
-    var playerObj = playerDict[playerID];
+    let playerObj = playerDict[playerID];
     Matter.Body.applyForce(playerObj, playerObj.position, { x: xF, y: yF });
 }
