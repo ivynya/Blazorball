@@ -112,12 +112,12 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         let bY = ball.position.y;
         if (bX < wSpacing * 0.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
             orangeScore++;
-            document.getElementById("scoreRed").innerText = orangeScore;
+            updateScore(orangeScore, blueScore);
             triggerGoal();
         }
         else if (bX > wSpacing * 7.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
             blueScore++;
-            document.getElementById("scoreBlue").innerText = blueScore;
+            updateScore(orangeScore, blueScore);
             triggerGoal();
         }
     });
@@ -148,10 +148,19 @@ function runGameTimer() {
         let min = Math.floor(tRemaining / 60);
         let sec = (tRemaining % 60).toString().padStart(2, '0');
         document.getElementById("timer").innerText = `${min}:${sec}`;
+        // Handle game end
         if (tRemaining === 0) {
             clearInterval(gameTimer);
+            acceptPlayerInput = false;
+            document.getElementById("gameEndSummary").style.display = "unset";
         }
     }, 1000);
+}
+
+// Use interop to set score
+function updateScore(orange, blue) {
+    if (instance)
+        instance.invokeMethodAsync('UpdateScore', orange, blue);
 }
 
 // Trigger goal text and reset ball & players

@@ -52,7 +52,7 @@
     <div class="info-bar @TeamColorCSS">
         <div class="score">
             <img src="/img/fire.svg" alt="Unit Icon" />
-            <h1><span class="c-red">0</span> - <span class="c-blue">0</span></h1>
+            <h1><span class="c-red">@OrangeScore</span> - <span class="c-blue">@BlueScore</span></h1>
         </div>
     </div>
     <br /><br />
@@ -80,6 +80,8 @@
     string TeamColorCSS;
     string TeamName;
     string PolygonName;
+    int OrangeScore;
+    int BlueScore;
 
     int? gamePIN;
     string userName;
@@ -145,6 +147,13 @@
 
             JSRuntime.InvokeAsync<object>("fullscreen");
             JSRuntime.InvokeAsync<object>("initcontrols");
+            StateHasChanged();
+        });
+
+        _hubConnection.On<int, int>(Messages.UpdateScore, (orangeScore, blueScore) =>
+        {
+            OrangeScore = orangeScore;
+            BlueScore = blueScore;
             StateHasChanged();
         });
 

@@ -104,6 +104,12 @@ namespace Blazorball.Hubs
             await Clients.Group(room.ToString()).SendAsync(Messages.StartGame);
         }
 
+        // Updates the score in client rooms
+        public async Task UpdateScore(int room, int orangeScore, int blueScore)
+        {
+            await Clients.OthersInGroup(room.ToString()).SendAsync(Messages.UpdateScore, orangeScore, blueScore);
+        }
+
         // Handles removing host or client on disconnect
         public override async Task OnDisconnectedAsync(Exception e)
         {

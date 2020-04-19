@@ -31,12 +31,32 @@
 </section>
 <section class="game @GameCSS">
     <div class="game-info">
-        <h1 class="score"><span id="scoreRed" class="c-red">0</span> - <span id="scoreBlue" class="c-blue">0</span></h1>
+        <h1 class="score"><span class="c-red">@OrangeScore</span> - <span class="c-blue">@BlueScore</span></h1>
         <h2 id="timer" class="timer">3:00</h2>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div class="text-overlay">
         <h1 id="overlayText">3</h1>
+        <div id="gameEndSummary">
+            <h1>Game Over!</h1>
+            <h2 id="finalScore"><span class="c-red">@OrangeScore</span> - <span class="c-blue">@BlueScore</span></h2>
+            <section class="teams">
+                @for (int i = 1; i <= _teamCount; i++)
+                {
+                <ul>
+                    <li><span><b>Team @i</b></span></li>
+                    @{ List<Player> players = _users.Where(u => u.Team == i).ToList(); }
+                    @if (players.Count() == 0)
+                    { <li><span>No players!</span></li> }
+
+                    @foreach (Player user in players)
+                    {
+                        <li><span>(@Common.PolygonNames[players.IndexOf(user) + 3]) @user.Username</span></li>
+                    }
+                </ul>
+                }
+            </section>
+        </div>
     </div>
 </section>
 
@@ -48,6 +68,9 @@
 
     private string LobbyCSS;
     private string GameCSS = "d-none";
+
+    int OrangeScore = 0;
+    int BlueScore = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,6 +118,15 @@
 
     Task Start() =>
         _hubConnection.SendAsync(Messages.StartGame);
+
+    [JSInvokable]
+    public async Task UpdateScore(int orange, int blue)
+    {
+        OrangeScore = orange;
+        BlueScore = blue;
+        StateHasChanged();
+        await _hubConnection.SendAsync(Messages.UpdateScore, RoomCode, orange, blue);
+    }
 
     public bool IsConnected =>
         _hubConnection.State == HubConnectionState.Connected;
