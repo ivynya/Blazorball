@@ -4,9 +4,9 @@ Blazorball is a work-in-progress multiplayer game built with ASP.NET Core 3.1 Bl
 
 The game is designed to be played in person or over a group call with screenshare support, with one person acting as host and the rest connecting to the game with their mobile devices or computers. It is a physics-based (using Matter.js) football-them-up.
 
-# Currently WIP
+# WIP, but Playable
 
-A large percentage of the game is implemented but core features are still missing. Teams management and joining a room is entirely functional. Core gameplay is essentially finished. However, things such as updating client scores, end-of-game screens, rematches within the same room, better error handling, and more still need to be implemented. This will come over the next week or so.
+The game is in a playable state, but still with issues. Users can join, and there is a game start and you can do stuff. Currently, issues arise with creating a new lobby after a finished game (js not disposing properly) and other various things.
 
 # Setup
 
