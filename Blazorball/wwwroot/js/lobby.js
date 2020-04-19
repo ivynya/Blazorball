@@ -6,6 +6,9 @@ var leftGoal, rightGoal;
 
 // Game
 var playerDict = {};
+// Player reset info
+var playerJson, tCA, tCB;
+// In this file, red team = orange team
 var orangeScore = 0, blueScore = 0;
 
 // Disable player input until game starts
@@ -92,6 +95,11 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         playerDict[player.Id] = playerObject;
     });
 
+    // Set up global reset info -- SUPER JANK and last minute
+    playerJson = players;
+    tCA = teamCountA;
+    tCB = teamCountB;
+
     // run the engine
     Engine.run(engine);
 
@@ -105,10 +113,12 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
         if (bX < wSpacing * 0.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
             orangeScore++;
             document.getElementById("scoreRed").innerText = orangeScore;
+            triggerGoal();
         }
         else if (bX > wSpacing * 7.5 && bY < hSpacing * 5 && bY > hSpacing * 3) {
             blueScore++;
             document.getElementById("scoreBlue").innerText = blueScore;
+            triggerGoal();
         }
     });
 
@@ -116,12 +126,12 @@ window.gamestart = (playerList, teamCountA, teamCountB) => {
     var ct = 2;
     var countdown = setInterval(() => {
         if (ct != 0)
-            document.getElementById("countdownText").innerText = ct;
+            document.getElementById("overlayText").innerText = ct;
         else {
-            document.getElementById("countdownText").innerText = "Go!";
+            document.getElementById("overlayText").innerText = "Go!";
             clearInterval(countdown);
             setTimeout(() => {
-                document.getElementById("countdownText").style.display = "none";
+                document.getElementById("overlayText").style.display = "none";
                 acceptPlayerInput = true;
                 runGameTimer();
             }, 1200);
@@ -144,9 +154,54 @@ function runGameTimer() {
     }, 1000);
 }
 
-// Trigger goal text and reset ball
+// Trigger goal text and reset ball & players
 function triggerGoal() {
+    // Disable player input
+    acceptPlayerInput = false;
+    // Set ball position and remove momentum
+    Matter.Body.setPosition(ball, { x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    Matter.Body.setVelocity(ball, { x: 0, y: 0 });
+    // Reset players
+    resetPlayers();
+    // Animate goal text
+    let textNode = document.getElementById("overlayText");
+    textNode.innerText = "";
+    textNode.style.display = "unset";
+    let letters = ['G', 'O', 'A', 'A', 'L', '!'];
+    for (var i = 0; i < letters.length; i++) {
+        setTimeout((x) => {
+            textNode.innerText += letters[x];
+        }, 100 * i, i);
+    }
+    setTimeout(() => {
+        // Hide text and reenable input
+        textNode.style.display = "none";
+        acceptPlayerInput = true;
+    }, (100 * letters.length) + 1500);
+}
 
+// Resets players to their original positions
+function resetPlayers() {
+    var indexA = 1, indexB = 1;
+    var teamAHeight = window.innerHeight / (tCA + 1);
+    var teamBHeight = window.innerHeight / (tCB + 1);
+    playerJson.forEach((player) => {
+        let playerObject = playerDict[player.Id];
+        Matter.Body.setVelocity(playerObject, { x: 0, y: 0 });
+        Matter.Body.setAngularVelocity(playerObject, 0);
+        if (player.Team == 1) {
+            let xPos = (1 / 4 * window.innerWidth), yPos = (teamAHeight * indexA);
+            Matter.Body.setPosition(playerObject, { x: xPos, y: yPos });
+            Matter.Body.setAngle(playerObject, 3.14);
+            indexA++;
+        }
+        else if (player.Team == 2) {
+            let xPos = (3 / 4 * window.innerWidth), yPos = (teamBHeight * indexB);
+            Matter.Body.setPosition(playerObject, { x: xPos, y: yPos });
+            Matter.Body.setAngle(playerObject, 0);
+            indexB++;
+        }
+    });
 }
 
 window.applyplayerforce = (playerID, xF, yF) => {
